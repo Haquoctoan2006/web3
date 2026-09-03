@@ -8,11 +8,7 @@
 <body>
 
 <h2>Quan tri san pham</h2>
-<a href="<c:url value='/admin/categories'/>">Danh muc</a> |
-<a href="<c:url value='/admin/products'/>">San pham</a> |
-<a href="<c:url value='/logout'/>">Dang xuat</a>
-<br><br>
-<a href="<c:url value='/admin/product/add'/>">Them san pham</a>
+<a href="<c:url value='/admin/product/add'/>" class="btn btn-primary btn-sm mb-3">Them san pham</a>
 <hr>
 <table border="1" width="100%" cellpadding="5">
 <tr>

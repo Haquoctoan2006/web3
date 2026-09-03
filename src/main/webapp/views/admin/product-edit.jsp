@@ -8,30 +8,48 @@
 <body>
 
 <h2>Sua san pham</h2>
-<form action="<c:url value='/admin/product/update'/>" method="post" enctype="multipart/form-data">
+<form action="<c:url value='/admin/product/update'/>" method="post" enctype="multipart/form-data" class="col-md-6" novalidate>
     <input type="hidden" name="productId" value="${product.productId}">
 
-    <label>Ten san pham:</label><br>
-    <input type="text" name="productName" value="${product.productName}" required><br><br>
+    <div class="mb-3">
+        <label class="form-label">Ten san pham:</label>
+        <input type="text" name="productName" value="${product.productName}" class="form-control"
+               required minlength="2" maxlength="150">
+        <div class="invalid-feedback">Vui long nhap ten san pham (toi thieu 2 ky tu).</div>
+    </div>
 
-    <label>Mo ta:</label><br>
-    <textarea name="description" rows="4" cols="40">${product.description}</textarea><br><br>
+    <div class="mb-3">
+        <label class="form-label">Mo ta:</label>
+        <textarea name="description" class="form-control" rows="4" maxlength="2000">${product.description}</textarea>
+    </div>
 
-    <label>Gia mua (gia von, chi Admin xem):</label><br>
-    <input type="number" step="0.01" name="importPrice" value="<fmt:formatNumber value='${product.importPrice}' pattern='0.##' groupingUsed='false'/>"><br><br>
+    <div class="mb-3">
+        <label class="form-label">Gia mua (gia von, chi Admin xem):</label>
+        <input type="number" step="0.01" min="0" name="importPrice" class="form-control"
+               value="<fmt:formatNumber value='${product.importPrice}' pattern='0.##' groupingUsed='false'/>">
+    </div>
 
-    <label>Gia ban:</label><br>
-    <input type="number" step="0.01" name="price" value="<fmt:formatNumber value='${product.price}' pattern='0.##' groupingUsed='false'/>" required><br><br>
+    <div class="mb-3">
+        <label class="form-label">Gia ban:</label>
+        <input type="number" step="0.01" min="0" name="price" class="form-control" required
+               value="<fmt:formatNumber value='${product.price}' pattern='0.##' groupingUsed='false'/>">
+        <div class="invalid-feedback">Gia ban phai la so >= 0.</div>
+    </div>
 
-    <label>So luong:</label><br>
-    <input type="number" name="quantity" value="${product.quantity}" required><br><br>
+    <div class="mb-3">
+        <label class="form-label">So luong:</label>
+        <input type="number" min="0" name="quantity" value="${product.quantity}" class="form-control" required>
+        <div class="invalid-feedback">So luong phai la so nguyen >= 0.</div>
+    </div>
 
-    <label>Danh muc:</label><br>
-    <select name="categoryId" required>
-        <c:forEach items="${listcate}" var="c">
-            <option value="${c.categoryid}" ${c.categoryid == product.category.categoryid ? 'selected' : ''}>${c.categoryname}</option>
-        </c:forEach>
-    </select><br><br>
+    <div class="mb-3">
+        <label class="form-label">Danh muc:</label>
+        <select name="categoryId" class="form-select" required>
+            <c:forEach items="${listcate}" var="c">
+                <option value="${c.categoryid}" ${c.categoryid == product.category.categoryid ? 'selected' : ''}>${c.categoryname}</option>
+            </c:forEach>
+        </select>
+    </div>
 
     <c:choose>
         <c:when test="${not empty product.image and fn:startsWith(product.image, 'https')}">
@@ -41,21 +59,40 @@
             <c:url value="/image?type=product&fname=${product.image}" var="imgUrl"/>
         </c:otherwise>
     </c:choose>
-    <img height="100" width="140" src="${imgUrl}"/><br><br>
+    <img height="100" width="140" src="${imgUrl}" class="mb-3 d-block rounded"/>
 
-    <label>Doi anh san pham:</label><br>
-    <input type="file" name="image"><br><br>
+    <div class="mb-3">
+        <label class="form-label">Doi anh san pham:</label>
+        <input type="file" name="image" class="form-control" accept="image/*">
+    </div>
 
-    <label>Trang thai:</label><br>
-    <input type="radio" id="ston" name="status" value="1" ${product.status == 1 ? 'checked' : ''}>
-    <label for="ston">Hoat dong</label>
-    <input type="radio" id="stoff" name="status" value="0" ${product.status != 1 ? 'checked' : ''}>
-    <label for="stoff">Khoa</label>
+    <div class="mb-3">
+        <label class="form-label d-block">Trang thai:</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="ston" name="status" value="1" ${product.status == 1 ? 'checked' : ''}>
+            <label class="form-check-label" for="ston">Hoat dong</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="stoff" name="status" value="0" ${product.status != 1 ? 'checked' : ''}>
+            <label class="form-check-label" for="stoff">Khoa</label>
+        </div>
+    </div>
 
-    <br><br>
-    <input type="submit" value="Cap nhat">
-    <a href="<c:url value='/admin/products'/>">Quay lai</a>
+    <button type="submit" class="btn btn-primary">Cap nhat</button>
+    <a href="<c:url value='/admin/products'/>" class="btn btn-outline-secondary">Quay lai</a>
 </form>
+
+<script>
+(function () {
+  'use strict';
+  Array.prototype.slice.call(document.querySelectorAll('form[novalidate]')).forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); }
+      form.classList.add('was-validated');
+    }, false);
+  });
+})();
+</script>
 
 </body>
 </html>

@@ -23,4 +23,9 @@ public interface IUserService {
     boolean resetPassword(String email, String otp, String newPassword);
 
     User findByEmail(String email);
+
+    User findById(int userId);
+
+    /** Cap nhat ho ten, so dien thoai va (neu co) ten file anh dai dien moi. Tra ve User da cap nhat. */
+    User updateProfile(int userId, String fullname, String phone, String avatarFileName) throws Exception;
 }

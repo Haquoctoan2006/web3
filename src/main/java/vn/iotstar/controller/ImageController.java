@@ -26,7 +26,14 @@ public class ImageController extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        String baseDir = "product".equals(type) ? constants.PRODUCT_DIR : constants.DIR;
+        String baseDir;
+        if ("product".equals(type)) {
+            baseDir = constants.PRODUCT_DIR;
+        } else if ("avatar".equals(type)) {
+            baseDir = constants.AVATAR_DIR;
+        } else {
+            baseDir = constants.DIR;
+        }
         File file = new File(baseDir, fname);
         if (!file.exists()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);

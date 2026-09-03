@@ -10,11 +10,12 @@
 <body>
 
 <h2>Edit Category</h2>
-<form action="<c:url value="/admin/category/update"/>" method="post" enctype="multipart/form-data">
+<form action="<c:url value="/admin/category/update"/>" method="post" enctype="multipart/form-data" novalidate>
     <input type="hidden" name="categoryid" value="${cate.categoryid}">
 
     <label for="categoryname">Category name:</label><br>
-    <input type="text" id="categoryname" name="categoryname" value="${cate.categoryname}" required><br><br>
+    <input type="text" id="categoryname" name="categoryname" value="${cate.categoryname}" class="form-control"
+           style="max-width:400px" required minlength="2" maxlength="50"><br><br>
 
     <label for="images">Link images:</label><br>
     <input type="text" id="images" name="images" value="${cate.images}"><br><br>
@@ -42,6 +43,18 @@
     <input type="submit" value="Update">
     <a href="<c:url value="/admin/categories"/>">Back</a>
 </form>
+
+<script>
+(function () {
+  'use strict';
+  Array.prototype.slice.call(document.querySelectorAll('form[novalidate]')).forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); }
+      form.classList.add('was-validated');
+    }, false);
+  });
+})();
+</script>
 
 </body>
 </html>

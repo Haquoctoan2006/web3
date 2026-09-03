@@ -13,13 +13,6 @@ td, th { border: 1px solid #ccc; padding: 6px 10px; }
 </head>
 <body>
 
-<nav>
-    <a href="<c:url value='/home'/>">Trang chu</a> |
-    <a href="<c:url value='/product'/>">San pham</a> |
-    <a href="<c:url value='/logout'/>">Dang xuat</a>
-</nav>
-<hr>
-
 <h2>Don hang cua toi</h2>
 
 <c:if test="${empty orders}">

@@ -14,15 +14,6 @@
 </head>
 <body>
 
-<nav>
-    <a href="<c:url value='/home'/>">Trang chu</a> |
-    <a href="<c:url value='/product'/>">San pham</a> |
-    <c:if test="${not empty sessionScope.SESSION_USER}">
-        <a href="<c:url value='/orders'/>">Don hang cua toi</a>
-    </c:if>
-</nav>
-<hr>
-
 <c:if test="${not empty error}"><p style="color:red">${error}</p></c:if>
 
 <c:choose>

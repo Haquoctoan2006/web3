@@ -9,10 +9,11 @@
 <body>
 
 <h2>Add Category</h2>
-<form action="<c:url value="/admin/category/insert"/>" method="post" enctype="multipart/form-data">
+<form action="<c:url value="/admin/category/insert"/>" method="post" enctype="multipart/form-data" novalidate>
 
     <label for="categoryname">Category name:</label><br>
-    <input type="text" id="categoryname" name="categoryname" required><br><br>
+    <input type="text" id="categoryname" name="categoryname" class="form-control" style="max-width:400px"
+           required minlength="2" maxlength="50"><br><br>
 
     <label for="images">Link images:</label><br>
     <input type="text" id="images" name="images"><br><br>
@@ -30,6 +31,18 @@
     <input type="submit" value="Insert">
     <a href="<c:url value="/admin/categories"/>">Back</a>
 </form>
+
+<script>
+(function () {
+  'use strict';
+  Array.prototype.slice.call(document.querySelectorAll('form[novalidate]')).forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); }
+      form.classList.add('was-validated');
+    }, false);
+  });
+})();
+</script>
 
 </body>
 </html>

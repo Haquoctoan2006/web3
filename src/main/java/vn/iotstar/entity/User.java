@@ -26,6 +26,28 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "phone", columnDefinition = "VARCHAR(20)")
+    private String phone;
+
+    @Column(name = "avatar", columnDefinition = "VARCHAR(255)")
+    private String avatar;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     // 0 = chua kich hoat, 1 = da kich hoat
     @Column(name = "active")
     private Integer active;

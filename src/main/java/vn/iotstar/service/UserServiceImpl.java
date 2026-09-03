@@ -141,6 +141,29 @@ public class UserServiceImpl implements IUserService {
         return userDao.findByEmail(email);
     }
 
+    @Override
+    public User findById(int userId) {
+        return userDao.findById(userId);
+    }
+
+    @Override
+    public User updateProfile(int userId, String fullname, String phone, String avatarFileName) throws Exception {
+        User user = userDao.findById(userId);
+        if (user == null) {
+            throw new Exception("Khong tim thay nguoi dung");
+        }
+        if (fullname == null || fullname.trim().isEmpty()) {
+            throw new Exception("Ho ten khong duoc de trong");
+        }
+        user.setFullname(fullname.trim());
+        user.setPhone(phone == null ? null : phone.trim());
+        if (avatarFileName != null && !avatarFileName.isEmpty()) {
+            user.setAvatar(avatarFileName);
+        }
+        userDao.update(user);
+        return user;
+    }
+
     private Date addMinutes(Date date, int minutes) {
         return new Date(date.getTime() + minutes * 60 * 1000L);
     }

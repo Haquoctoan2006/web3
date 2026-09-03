@@ -15,25 +15,6 @@
 </head>
 <body>
 
-<nav>
-    <a href="<c:url value='/home'/>">Trang chu</a> |
-    <a href="<c:url value='/product'/>">San pham</a> |
-    <c:choose>
-        <c:when test="${not empty sessionScope.SESSION_USER}">
-            Xin chao, ${sessionScope.SESSION_USER.fullname}
-            <c:if test="${sessionScope.SESSION_USER.role == 1}">
-                | <a href="<c:url value='/admin/products'/>">Quan tri</a>
-            </c:if>
-            | <a href="<c:url value='/logout'/>">Dang xuat</a>
-        </c:when>
-        <c:otherwise>
-            <a href="<c:url value='/login'/>">Dang nhap</a>
-            | <a href="<c:url value='/register'/>">Dang ky</a>
-        </c:otherwise>
-    </c:choose>
-</nav>
-<hr>
-
 <c:if test="${not empty error}">
     <p style="color:red">${error}</p>
 </c:if>

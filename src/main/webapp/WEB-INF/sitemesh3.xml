@@ -1,0 +1,10 @@
+<sitemesh>
+    <!-- Trang admin dung decorator rieng (co menu quan tri ben trai) -->
+    <mapping path="/admin/*" decorator="/admin.jsp" />
+
+    <!-- Cac trang con lai (trang chu, san pham, tai khoan, don hang...) dung decorator chinh -->
+    <mapping path="/*" decorator="/main.jsp" />
+
+    <!-- Khong decorator anh, file tinh -->
+    <mapping path="/image" exclude="true" />
+</sitemesh>

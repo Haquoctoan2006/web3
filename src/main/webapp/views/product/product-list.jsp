@@ -16,12 +16,6 @@
 </head>
 <body>
 
-<nav>
-    <a href="<c:url value='/home'/>">Trang chu</a> |
-    <a href="<c:url value='/product'/>">San pham</a>
-</nav>
-<hr>
-
 <h2>Tat ca san pham</h2>
 <div class="grid">
 <c:forEach items="${listproduct}" var="p">

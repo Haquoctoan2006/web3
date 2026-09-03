@@ -8,6 +8,9 @@ public class constants {
     // Absolute path on server where uploaded product images are stored.
     public static final String PRODUCT_DIR = "C:/uploads/products";
 
+    // Absolute path on server where uploaded user avatar images are stored.
+    public static final String AVATAR_DIR = "C:/uploads/avatars";
+
     public static final String DEFAULT_FILENAME = "default.file";
 
     // ==== SMTP mail config (dung Gmail App Password, khong dung mat khau Gmail
