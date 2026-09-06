@@ -6,6 +6,7 @@
 <body>
 
 <h2>Them san pham</h2>
+<c:if test="${not empty error}"><div class="alert alert-danger">${error}</div></c:if>
 <form action="<c:url value='/admin/product/insert'/>" method="post" enctype="multipart/form-data" class="col-md-6" novalidate>
 
     <div class="mb-3">

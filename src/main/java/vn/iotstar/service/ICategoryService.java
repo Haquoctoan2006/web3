@@ -6,9 +6,9 @@ import vn.iotstar.entity.Category;
 
 public interface ICategoryService {
 
-    void insert(Category category);
+    void insert(Category category) throws Exception;
 
-    void update(Category category);
+    void update(Category category) throws Exception;
 
     void delete(int id) throws Exception;
 

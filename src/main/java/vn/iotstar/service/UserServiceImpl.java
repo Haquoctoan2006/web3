@@ -13,8 +13,21 @@ public class UserServiceImpl implements IUserService {
 
     public IUserDao userDao = new UserDao();
 
+    private static final java.util.regex.Pattern EMAIL_PATTERN =
+            java.util.regex.Pattern.compile("^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$");
+
     @Override
     public String register(String fullname, String email, String rawPassword) throws Exception {
+        if (fullname == null || fullname.trim().length() < 2) {
+            throw new Exception("Ho ten phai co it nhat 2 ky tu");
+        }
+        if (email == null || !EMAIL_PATTERN.matcher(email.trim()).matches()) {
+            throw new Exception("Email khong dung dinh dang");
+        }
+        if (rawPassword == null || rawPassword.length() < 6) {
+            throw new Exception("Mat khau phai co it nhat 6 ky tu");
+        }
+
         User existed = userDao.findByEmail(email);
 
         String otp = OtpUtil.generateOtp();
@@ -152,11 +165,15 @@ public class UserServiceImpl implements IUserService {
         if (user == null) {
             throw new Exception("Khong tim thay nguoi dung");
         }
-        if (fullname == null || fullname.trim().isEmpty()) {
-            throw new Exception("Ho ten khong duoc de trong");
+        if (fullname == null || fullname.trim().length() < 2) {
+            throw new Exception("Ho ten phai co it nhat 2 ky tu");
+        }
+        String trimmedPhone = phone == null ? null : phone.trim();
+        if (trimmedPhone != null && !trimmedPhone.isEmpty() && !trimmedPhone.matches("^0[0-9]{9,10}$")) {
+            throw new Exception("So dien thoai khong hop le (vi du: 0912345678)");
         }
         user.setFullname(fullname.trim());
-        user.setPhone(phone == null ? null : phone.trim());
+        user.setPhone(trimmedPhone);
         if (avatarFileName != null && !avatarFileName.isEmpty()) {
             user.setAvatar(avatarFileName);
         }

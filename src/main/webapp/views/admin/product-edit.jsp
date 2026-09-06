@@ -8,6 +8,7 @@
 <body>
 
 <h2>Sua san pham</h2>
+<c:if test="${not empty error}"><div class="alert alert-danger">${error}</div></c:if>
 <form action="<c:url value='/admin/product/update'/>" method="post" enctype="multipart/form-data" class="col-md-6" novalidate>
     <input type="hidden" name="productId" value="${product.productId}">
 

@@ -52,7 +52,7 @@
 
       <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="<c:url value='/admin/products'/>">CategoryCRUD - Trang quan tri</a>
+          <a class="navbar-brand" href="<c:url value='/admin/products'/>">Convenient Shop - Trang quan tri</a>
           <span class="navbar-text text-white">
             ${sessionScope.SESSION_USER.fullname} |
             <a href="<c:url value='/home'/>" class="text-white">Ve trang chu</a> |

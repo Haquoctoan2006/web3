@@ -9,10 +9,11 @@
 <body>
 
 <h2>Add Category</h2>
+<c:if test="${not empty error}"><div class="alert alert-danger">${error}</div></c:if>
 <form action="<c:url value="/admin/category/insert"/>" method="post" enctype="multipart/form-data" novalidate>
 
     <label for="categoryname">Category name:</label><br>
-    <input type="text" id="categoryname" name="categoryname" class="form-control" style="max-width:400px"
+    <input type="text" id="categoryname" name="categoryname" value="${cate.categoryname}" class="form-control" style="max-width:400px"
            required minlength="2" maxlength="50"><br><br>
 
     <label for="images">Link images:</label><br>

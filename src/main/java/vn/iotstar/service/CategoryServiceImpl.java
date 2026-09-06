@@ -26,19 +26,37 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public void insert(Category category) {
-        Category cate = this.findByCategoryname(category.getCategoryname());
-        if (cate == null) {
-            cateDao.insert(category);
+    public void insert(Category category) throws Exception {
+        if (category.getCategoryname() == null || category.getCategoryname().trim().isEmpty()) {
+            throw new Exception("Ten danh muc khong duoc de trong");
         }
+        category.setCategoryname(category.getCategoryname().trim());
+
+        Category cate = this.findByCategoryname(category.getCategoryname());
+        if (cate != null) {
+            throw new Exception("Ten danh muc da ton tai");
+        }
+        cateDao.insert(category);
     }
 
     @Override
-    public void update(Category category) {
-        Category cate = this.findById(category.getCategoryid());
-        if (cate != null) {
-            cateDao.update(category);
+    public void update(Category category) throws Exception {
+        if (category.getCategoryname() == null || category.getCategoryname().trim().isEmpty()) {
+            throw new Exception("Ten danh muc khong duoc de trong");
         }
+        category.setCategoryname(category.getCategoryname().trim());
+
+        Category existing = this.findById(category.getCategoryid());
+        if (existing == null) {
+            throw new Exception("Danh muc khong ton tai");
+        }
+
+        Category sameName = this.findByCategoryname(category.getCategoryname());
+        if (sameName != null && sameName.getCategoryid() != category.getCategoryid()) {
+            throw new Exception("Ten danh muc da ton tai");
+        }
+
+        cateDao.update(category);
     }
 
     @Override

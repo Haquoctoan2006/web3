@@ -83,38 +83,50 @@ public class ProductAdminController extends HttpServlet {
         if (url.contains("/admin/product/insert")) {
             String name = req.getParameter("productName");
             String description = req.getParameter("description");
-            double price = Double.parseDouble(req.getParameter("price"));
-            double importPrice = parseDoubleSafe(req.getParameter("importPrice"));
-            int quantity = Integer.parseInt(req.getParameter("quantity"));
-            int status = Integer.parseInt(req.getParameter("status"));
-            int categoryId = Integer.parseInt(req.getParameter("categoryId"));
-
-            Product product = new Product();
-            product.setProductName(name);
-            product.setDescription(description);
-            product.setPrice(price);
-            product.setImportPrice(importPrice);
-            product.setQuantity(quantity);
-            product.setStatus(status);
-            product.setCreatedDate(new Date());
-
-            Category category = categoryService.findById(categoryId);
-            product.setCategory(category);
+            double importPrice = parseDoubleSafe(req.getParameter("importPrice"), 0);
 
             try {
-                Part part = req.getPart("image");
-                if (part != null && part.getSize() > 0) {
-                    String fname = saveFile(part, uploadPath);
-                    product.setImage(fname);
-                } else {
-                    product.setImage(constants.DEFAULT_FILENAME);
-                }
-            } catch (FileNotFoundException fne) {
-                fne.printStackTrace();
-            }
+                double price = parseDoubleStrict(req.getParameter("price"), "Gia ban khong hop le");
+                int quantity = parseIntStrict(req.getParameter("quantity"), "So luong khong hop le");
+                int categoryId = parseIntStrict(req.getParameter("categoryId"), "Vui long chon danh muc");
+                int status = parseIntSafe(req.getParameter("status"), 1);
 
-            productService.insert(product);
-            resp.sendRedirect(req.getContextPath() + "/admin/products");
+                validateProductInput(name, price, quantity, categoryId);
+
+                Product product = new Product();
+                product.setProductName(name.trim());
+                product.setDescription(description);
+                product.setPrice(price);
+                product.setImportPrice(importPrice);
+                product.setQuantity(quantity);
+                product.setStatus(status);
+                product.setCreatedDate(new Date());
+
+                Category category = categoryService.findById(categoryId);
+                if (category == null) {
+                    throw new Exception("Danh muc khong ton tai");
+                }
+                product.setCategory(category);
+
+                try {
+                    Part part = req.getPart("image");
+                    if (part != null && part.getSize() > 0) {
+                        String fname = saveFile(part, uploadPath);
+                        product.setImage(fname);
+                    } else {
+                        product.setImage(constants.DEFAULT_FILENAME);
+                    }
+                } catch (FileNotFoundException fne) {
+                    fne.printStackTrace();
+                }
+
+                productService.insert(product);
+                resp.sendRedirect(req.getContextPath() + "/admin/products");
+            } catch (Exception e) {
+                req.setAttribute("error", e.getMessage());
+                req.setAttribute("listcate", categoryService.findAll());
+                req.getRequestDispatcher("/views/admin/product-add.jsp").forward(req, resp);
+            }
             return;
         }
 
@@ -122,48 +134,103 @@ public class ProductAdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("productId"));
             String name = req.getParameter("productName");
             String description = req.getParameter("description");
-            double price = Double.parseDouble(req.getParameter("price"));
-            double importPrice = parseDoubleSafe(req.getParameter("importPrice"));
-            int quantity = Integer.parseInt(req.getParameter("quantity"));
-            int status = Integer.parseInt(req.getParameter("status"));
-            int categoryId = Integer.parseInt(req.getParameter("categoryId"));
+            double importPrice = parseDoubleSafe(req.getParameter("importPrice"), 0);
 
             Product product = productService.findById(id);
-            String oldImage = product.getImage();
-
-            product.setProductName(name);
-            product.setDescription(description);
-            product.setPrice(price);
-            product.setImportPrice(importPrice);
-            product.setQuantity(quantity);
-            product.setStatus(status);
-            product.setCategory(categoryService.findById(categoryId));
 
             try {
-                Part part = req.getPart("image");
-                if (part != null && part.getSize() > 0) {
-                    if (oldImage != null && !oldImage.equals(constants.DEFAULT_FILENAME)) {
-                        deleteFile(uploadPath + File.separator + oldImage);
-                    }
-                    String fname = saveFile(part, uploadPath);
-                    product.setImage(fname);
-                } else {
-                    product.setImage(oldImage);
-                }
-            } catch (FileNotFoundException fne) {
-                fne.printStackTrace();
-            }
+                double price = parseDoubleStrict(req.getParameter("price"), "Gia ban khong hop le");
+                int quantity = parseIntStrict(req.getParameter("quantity"), "So luong khong hop le");
+                int categoryId = parseIntStrict(req.getParameter("categoryId"), "Vui long chon danh muc");
+                int status = parseIntSafe(req.getParameter("status"), 1);
 
-            productService.update(product);
-            resp.sendRedirect(req.getContextPath() + "/admin/products");
+                validateProductInput(name, price, quantity, categoryId);
+
+                Category category = categoryService.findById(categoryId);
+                if (category == null) {
+                    throw new Exception("Danh muc khong ton tai");
+                }
+
+                String oldImage = product.getImage();
+                product.setProductName(name.trim());
+                product.setDescription(description);
+                product.setPrice(price);
+                product.setImportPrice(importPrice);
+                product.setQuantity(quantity);
+                product.setStatus(status);
+                product.setCategory(category);
+
+                try {
+                    Part part = req.getPart("image");
+                    if (part != null && part.getSize() > 0) {
+                        if (oldImage != null && !oldImage.equals(constants.DEFAULT_FILENAME)) {
+                            deleteFile(uploadPath + File.separator + oldImage);
+                        }
+                        String fname = saveFile(part, uploadPath);
+                        product.setImage(fname);
+                    } else {
+                        product.setImage(oldImage);
+                    }
+                } catch (FileNotFoundException fne) {
+                    fne.printStackTrace();
+                }
+
+                productService.update(product);
+                resp.sendRedirect(req.getContextPath() + "/admin/products");
+            } catch (Exception e) {
+                req.setAttribute("error", e.getMessage());
+                req.setAttribute("product", product);
+                req.setAttribute("listcate", categoryService.findAll());
+                req.getRequestDispatcher("/views/admin/product-edit.jsp").forward(req, resp);
+            }
         }
     }
 
-    private double parseDoubleSafe(String value) {
+    /** Kiem tra du lieu san pham phia server (backstop cho HTML5 validation phia client). */
+    private void validateProductInput(String name, double price, int quantity, int categoryId) throws Exception {
+        if (name == null || name.trim().length() < 2) {
+            throw new Exception("Ten san pham phai co it nhat 2 ky tu");
+        }
+        if (price < 0) {
+            throw new Exception("Gia ban khong duoc am");
+        }
+        if (quantity < 0) {
+            throw new Exception("So luong khong duoc am");
+        }
+        if (categoryId <= 0) {
+            throw new Exception("Vui long chon danh muc hop le");
+        }
+    }
+
+    private double parseDoubleStrict(String value, String errorMessage) throws Exception {
         try {
             return Double.parseDouble(value);
         } catch (Exception e) {
-            return 0;
+            throw new Exception(errorMessage);
+        }
+    }
+
+    private int parseIntStrict(String value, String errorMessage) throws Exception {
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            throw new Exception(errorMessage);
+        }
+    }
+
+    private int parseIntSafe(String value, int defaultValue) {
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    private double parseDoubleSafe(String value, double defaultValue) {
+        try {
+            return Double.parseDouble(value);
+        } catch (Exception e) {
+            return defaultValue;
         }
     }
 

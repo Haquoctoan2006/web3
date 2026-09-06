@@ -60,8 +60,8 @@ public class CategoryController extends HttpServlet {
 
         if (url.contains("/admin/category/insert")) {
             String categoryname = req.getParameter("categoryname");
-            int status = Integer.parseInt(req.getParameter("status"));
             String images = req.getParameter("images");
+            int status = parseIntSafe(req.getParameter("status"), 1);
 
             Category category = new Category();
             category.setCategoryname(categoryname);
@@ -92,15 +92,22 @@ public class CategoryController extends HttpServlet {
                 fne.printStackTrace();
             }
 
-            cateService.insert(category);
-            resp.sendRedirect(req.getContextPath() + "/admin/categories");
+            try {
+                cateService.insert(category);
+                resp.sendRedirect(req.getContextPath() + "/admin/categories");
+            } catch (Exception e) {
+                req.setAttribute("error", e.getMessage());
+                req.setAttribute("cate", category);
+                req.getRequestDispatcher("/views/admin/category-add.jsp").forward(req, resp);
+            }
+            return;
         }
 
         if (url.contains("/admin/category/update")) {
             int categoryid = Integer.parseInt(req.getParameter("categoryid"));
             String categoryname = req.getParameter("categoryname");
-            int status = Integer.parseInt(req.getParameter("status"));
             String images = req.getParameter("images");
+            int status = parseIntSafe(req.getParameter("status"), 1);
 
             Category category = cateService.findById(categoryid);
             String fileold = category.getImages();
@@ -136,8 +143,22 @@ public class CategoryController extends HttpServlet {
                 fne.printStackTrace();
             }
 
-            cateService.update(category);
-            resp.sendRedirect(req.getContextPath() + "/admin/categories");
+            try {
+                cateService.update(category);
+                resp.sendRedirect(req.getContextPath() + "/admin/categories");
+            } catch (Exception e) {
+                req.setAttribute("error", e.getMessage());
+                req.setAttribute("cate", category);
+                req.getRequestDispatcher("/views/admin/category-edit.jsp").forward(req, resp);
+            }
+        }
+    }
+
+    private int parseIntSafe(String value, int defaultValue) {
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            return defaultValue;
         }
     }
 

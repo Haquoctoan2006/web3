@@ -10,6 +10,7 @@
 <body>
 
 <h2>Edit Category</h2>
+<c:if test="${not empty error}"><div class="alert alert-danger">${error}</div></c:if>
 <form action="<c:url value="/admin/category/update"/>" method="post" enctype="multipart/form-data" novalidate>
     <input type="hidden" name="categoryid" value="${cate.categoryid}">
 
