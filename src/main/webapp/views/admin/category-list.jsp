@@ -10,7 +10,18 @@
 <body>
 
 <h2>Category Management</h2>
-<a href="<c:url value="/admin/category/add"/>">Add Category</a><br>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <a href="<c:url value="/admin/category/add"/>">Add Category</a>
+
+    <form action="<c:url value="/admin/categories"/>" method="get" style="display:flex; gap:6px;">
+        <input type="text" name="keyword" value="${keyword}" placeholder="Tim theo ten danh muc...">
+        <button type="submit">Tim kiem</button>
+        <c:if test="${not empty keyword}">
+            <a href="<c:url value="/admin/categories"/>">Xoa loc</a>
+        </c:if>
+    </form>
+</div>
 <hr>
 <table border="1" width="100%" cellpadding="5">
 <tr>

@@ -1,6 +1,7 @@
 package vn.iotstar.service;
 
 import java.util.Date;
+import java.util.List;
 
 import vn.iotstar.dao.IUserDao;
 import vn.iotstar.dao.UserDao;
@@ -183,5 +184,83 @@ public class UserServiceImpl implements IUserService {
 
     private Date addMinutes(Date date, int minutes) {
         return new Date(date.getTime() + minutes * 60 * 1000L);
+    }
+
+    // ==== CRUD danh cho trang quan tri (Admin) ====
+
+    @Override
+    public List<User> findAll() {
+        return userDao.findAll();
+    }
+
+    @Override
+    public List<User> searchByKeyword(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return userDao.findAll();
+        }
+        return userDao.searchByKeyword(keyword.trim());
+    }
+
+    @Override
+    public void insert(User user) throws Exception {
+        if (user.getFullname() == null || user.getFullname().trim().length() < 2) {
+            throw new Exception("Ho ten phai co it nhat 2 ky tu");
+        }
+        if (user.getEmail() == null || !EMAIL_PATTERN.matcher(user.getEmail().trim()).matches()) {
+            throw new Exception("Email khong dung dinh dang");
+        }
+        User existed = userDao.findByEmail(user.getEmail().trim());
+        if (existed != null) {
+            throw new Exception("Email da ton tai trong he thong");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new Exception("Mat khau khong duoc de trong");
+        }
+
+        user.setFullname(user.getFullname().trim());
+        user.setEmail(user.getEmail().trim());
+        user.setPassword(PasswordUtil.hash(user.getPassword()));
+        userDao.insert(user);
+    }
+
+    @Override
+    public void update(User user) throws Exception {
+        if (user.getFullname() == null || user.getFullname().trim().length() < 2) {
+            throw new Exception("Ho ten phai co it nhat 2 ky tu");
+        }
+        if (user.getEmail() == null || !EMAIL_PATTERN.matcher(user.getEmail().trim()).matches()) {
+            throw new Exception("Email khong dung dinh dang");
+        }
+
+        User existing = userDao.findById(user.getUserId());
+        if (existing == null) {
+            throw new Exception("Nguoi dung khong ton tai");
+        }
+
+        User sameEmail = userDao.findByEmail(user.getEmail().trim());
+        if (sameEmail != null && sameEmail.getUserId() != user.getUserId()) {
+            throw new Exception("Email da duoc su dung boi tai khoan khac");
+        }
+
+        existing.setFullname(user.getFullname().trim());
+        existing.setEmail(user.getEmail().trim());
+        existing.setPhone(user.getPhone());
+        existing.setRole(user.getRole());
+        existing.setActive(user.getActive());
+        // Neu admin nhap mat khau moi thi cap nhat, khong thi giu nguyen mat khau cu
+        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+            existing.setPassword(PasswordUtil.hash(user.getPassword().trim()));
+        }
+        userDao.update(existing);
+    }
+
+    @Override
+    public void delete(int id) throws Exception {
+        userDao.delete(id);
+    }
+
+    @Override
+    public int count() {
+        return userDao.count();
     }
 }

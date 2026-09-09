@@ -65,6 +65,7 @@
         <div class="sidebar" style="width:220px;">
           <a href="<c:url value='/admin/categories'/>">Quan ly Danh muc</a>
           <a href="<c:url value='/admin/products'/>">Quan ly San pham</a>
+          <a href="<c:url value='/admin/users'/>">Quan ly Nguoi dung</a>
         </div>
         <div class="flex-grow-1">
           <div class="admin-content">

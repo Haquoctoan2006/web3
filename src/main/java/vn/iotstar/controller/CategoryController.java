@@ -33,8 +33,15 @@ public class CategoryController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String url = req.getRequestURI();
         if (url.contains("/admin/categories")) {
-            List<Category> list = cateService.findAll();
+            String keyword = req.getParameter("keyword");
+            List<Category> list;
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                list = cateService.searchByName(keyword.trim());
+            } else {
+                list = cateService.findAll();
+            }
             req.setAttribute("listcate", list);
+            req.setAttribute("keyword", keyword);
             req.getRequestDispatcher("/views/admin/category-list.jsp").forward(req, resp);
         } else if (url.contains("/admin/category/add")) {
             req.getRequestDispatcher("/views/admin/category-add.jsp").forward(req, resp);

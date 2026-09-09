@@ -1,5 +1,7 @@
 package vn.iotstar.service;
 
+import java.util.List;
+
 import vn.iotstar.entity.User;
 
 public interface IUserService {
@@ -28,4 +30,23 @@ public interface IUserService {
 
     /** Cap nhat ho ten, so dien thoai va (neu co) ten file anh dai dien moi. Tra ve User da cap nhat. */
     User updateProfile(int userId, String fullname, String phone, String avatarFileName) throws Exception;
+
+    // ==== CRUD danh cho trang quan tri (Admin) ====
+
+    /** Lay toan bo danh sach user, dung cho man hinh quan tri. */
+    List<User> findAll();
+
+    /** Tim kiem user theo ho ten hoac email (dung cho o tim kiem trong trang quan tri). */
+    List<User> searchByKeyword(String keyword);
+
+    /** Admin tao moi 1 tai khoan user (co the chi dinh role, active ngay). */
+    void insert(User user) throws Exception;
+
+    /** Admin cap nhat thong tin 1 tai khoan user (ho ten, email, sdt, role, trang thai...). */
+    void update(User user) throws Exception;
+
+    /** Admin xoa 1 tai khoan user. */
+    void delete(int id) throws Exception;
+
+    int count();
 }
